@@ -6,8 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { join } from 'path'
 import { UserModule } from './user/user.module'
 import { ConfigModule } from '@nestjs/config'
-import { RoleController } from './role/role.controller'
-import { RoleService } from './role/role.service'
 import { RoleModule } from './role/role.module'
 
 @Module({
@@ -29,7 +27,7 @@ import { RoleModule } from './role/role.module'
     UserModule,
     RoleModule,
   ],
-  controllers: [AppController, RoleController],
-  providers: [AppService, RoleService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
