@@ -18,6 +18,9 @@ export class RoleService {
       where: {
         value: value,
       },
+      relations: {
+        users: true,
+      },
     })
   }
 }

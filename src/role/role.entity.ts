@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -25,12 +24,7 @@ export class RoleEntity extends BaseEntity {
   @Column()
   description: string
 
-  @ManyToMany(() => UserEntity)
-  @JoinTable({
-    name: 'user-roles',
-    joinColumn: { name: 'userEntityId' },
-    inverseJoinColumn: { name: 'roleEntityId' },
-  })
+  @ManyToMany(() => UserEntity, (user) => user.roles, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
   users: UserEntity[]
 
   @ApiProperty({ example: '2023-01-31 22:43:43.307586+03', description: 'Дата создания роли' })

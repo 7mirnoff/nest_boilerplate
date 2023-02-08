@@ -1,5 +1,15 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 import { ApiProperty } from '@nestjs/swagger'
+import { RoleEntity } from '../role/role.entity'
 
 @Entity()
 export class UserEntity extends BaseEntity {
@@ -24,6 +34,20 @@ export class UserEntity extends BaseEntity {
   @ApiProperty({ example: 'Оскорблял других пользователей в чате', description: 'Причина бана' })
   @Column({ type: 'text', nullable: true })
   banReason: string
+
+  @ManyToMany(() => RoleEntity, (role) => role.users, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
+  @JoinTable({
+    name: 'user_roles_entity',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+  })
+  roles: RoleEntity[]
 
   @ApiProperty({ example: '2023-01-31 22:43:43.307586+03', description: 'Дата создания пользователя' })
   @CreateDateColumn({ type: 'timestamp with time zone', default: () => 'CURRENT_TIMESTAMP' })
