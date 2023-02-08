@@ -7,6 +7,7 @@ import { join } from 'path'
 import { UserModule } from './user/user.module'
 import { ConfigModule } from '@nestjs/config'
 import { RoleModule } from './role/role.module'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { RoleModule } from './role/role.module'
     PostModule,
     UserModule,
     RoleModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -20,6 +20,8 @@ export class UserService {
     const user = await this.userRepository.save(userEntity)
 
     await this.userRolesRepository.save({ userId: user.id, roleId: role.id })
+
+    user.roles = [role]
     return user
   }
 
@@ -29,5 +31,18 @@ export class UserService {
         roles: true,
       },
     })
+  }
+
+  async getUserByEmail(email: string) {
+    const user = await this.userRepository.findOne({
+      where: {
+        email: email,
+      },
+      relations: {
+        roles: true,
+      },
+    })
+
+    return user
   }
 }

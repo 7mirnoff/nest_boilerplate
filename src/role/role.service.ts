@@ -19,7 +19,7 @@ export class RoleService {
         value: value,
       },
       relations: {
-        users: true,
+        users: false,
       },
     })
   }
