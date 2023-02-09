@@ -3,7 +3,8 @@ import { UserService } from './user.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserEntity } from './user.entity'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { Roles } from '../auth/roles-auth.decorator'
+import { RolesGuard } from '../auth/roles.guard'
 
 @ApiTags('Пользователи')
 @Controller('user')
@@ -19,7 +20,9 @@ export class UserController {
 
   @ApiOperation({ summary: 'Получение всех пользователей' })
   @ApiResponse({ status: 200, type: [UserEntity] })
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
+  @Roles('Admin')
+  @UseGuards(RolesGuard)
   @Get('all')
   async getAll() {
     return this.userService.getAllUsers()
