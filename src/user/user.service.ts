@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { UserEntity } from './user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { RoleService } from '../role/role.service'
 import { UserRolesEntity } from '../user-roles/user-roles.entity'
+import { AddRoleDto } from './dto/add-role.dto'
+import { BanUserDto } from './dto/ban-user.dto'
 
 @Injectable()
 export class UserService {
@@ -44,5 +46,34 @@ export class UserService {
     })
 
     return user
+  }
+
+  async addRole(dto: AddRoleDto) {
+    const user = await this.userRepository.findOneBy({
+      id: dto.userId,
+    })
+
+    const role = await this.roleService.getRoleByValue(dto.value)
+
+    if (role && user) {
+      await this.userRolesRepository.save({ userId: user.id, roleId: role.id })
+      return dto
+    }
+
+    throw new HttpException('Пользователь или роль не найдены', HttpStatus.NOT_FOUND)
+  }
+
+  async ban(dto: BanUserDto) {
+    const user = await this.userRepository.findOneBy({
+      id: dto.userId,
+    })
+
+    if (!user) {
+      throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND)
+    }
+
+    user.banned = true
+    user.banReason = dto.banReason
+    return await this.userRepository.save(user)
   }
 }
