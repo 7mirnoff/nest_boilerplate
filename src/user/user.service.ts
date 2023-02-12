@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { UserEntity } from './user.entity'
@@ -17,10 +17,14 @@ export class UserService {
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    const userEntity = await this.userRepository.create(dto)
+    const userEntity = this.userRepository.create(dto)
     const role = await this.roleService.getRoleByValue('User')
-    const user = await this.userRepository.save(userEntity)
 
+    if (!role) {
+      throw new UnauthorizedException({ message: 'Роль не найдена' })
+    }
+
+    const user = await this.userRepository.save(userEntity)
     await this.userRolesRepository.save({ userId: user.id, roleId: role.id })
 
     user.roles = [role]
@@ -28,7 +32,7 @@ export class UserService {
   }
 
   async getAllUsers() {
-    return this.userRepository.find({
+    return await this.userRepository.find({
       relations: {
         roles: true,
       },

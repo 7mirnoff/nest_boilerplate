@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module'
 @Module({
   imports: [
     ConfigModule.forRoot({
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
     TypeOrmModule.forRoot({

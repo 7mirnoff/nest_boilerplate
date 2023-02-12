@@ -10,11 +10,11 @@ export class RoleController {
 
   @Post()
   async create(@Body() dto: CreateRoleDto) {
-    return this.roleService.createRole(dto)
+    return await this.roleService.createRole(dto)
   }
 
   @Get(':value')
   async getRoleByValue(@Param('value') value: string) {
-    return this.roleService.getRoleByValue(value)
+    return await this.roleService.getRoleByValue(value)
   }
 }

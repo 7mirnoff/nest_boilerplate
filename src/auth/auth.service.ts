@@ -7,11 +7,11 @@ import { UserEntity } from '../user/user.entity'
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService, private jwtService: JwtService) {}
+  constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
 
   async login(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto)
-    return this.generateToken(user)
+    return await this.generateToken(user)
   }
 
   async registration(userDto: CreateUserDto) {
@@ -36,6 +36,11 @@ export class AuthService {
 
   private async validateUser(userDto: CreateUserDto) {
     const user = await this.userService.getUserByEmail(userDto.email)
+
+    if (!user) {
+      throw new UnauthorizedException({ message: 'Пользователь не найден' })
+    }
+
     const passwordEquals = await bcrypt.compare(userDto.password, user.password)
 
     if (user && passwordEquals) {
