@@ -52,6 +52,19 @@ export class UserService {
     return user
   }
 
+  async getUserById(id: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: {
+        roles: true,
+      },
+    })
+
+    return user
+  }
+
   async addRole(dto: AddRoleDto) {
     const user = await this.userRepository.findOneBy({
       id: dto.userId,

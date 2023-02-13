@@ -5,11 +5,13 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 import { ApiProperty } from '@nestjs/swagger'
 import { RoleEntity } from '../role/role.entity'
+import { PostEntity } from '../post/post.entity'
 
 @Entity()
 export class UserEntity extends BaseEntity {
@@ -48,6 +50,9 @@ export class UserEntity extends BaseEntity {
     },
   })
   roles: RoleEntity[]
+
+  @ManyToOne(() => PostEntity)
+  posts: PostEntity[]
 
   @ApiProperty({ example: '2023-01-31 22:43:43.307586+03', description: 'Дата создания пользователя' })
   @CreateDateColumn({ type: 'timestamp with time zone', default: () => 'CURRENT_TIMESTAMP' })

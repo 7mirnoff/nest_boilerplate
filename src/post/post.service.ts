@@ -1,44 +1,31 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { CreatePostDto } from './dto/create-post.dto'
-import { UpdatePostDto } from './dto/update-post.dto'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { PostEntity } from './post.entity'
 import { Repository } from 'typeorm'
+import { CreatePostDto } from './dto/create-post.dto'
+import { FilesService } from '../files/files.service'
+import { UserService } from '../user/user.service'
 
 @Injectable()
 export class PostService {
-  constructor(@InjectRepository(PostEntity) private readonly postRepository: Repository<PostEntity>) {}
+  constructor(
+    @InjectRepository(PostEntity) private readonly postRepository: Repository<PostEntity>,
+    private readonly filesService: FilesService,
+    private readonly userService: UserService,
+  ) {}
 
-  async getAll() {
-    return await this.postRepository.find()
-  }
-
-  async create(dto: CreatePostDto) {
-    const post = this.postRepository.create(dto)
-    return await this.postRepository.save(post)
-  }
-
-  async getById(id: string) {
-    return await this.postRepository.findOne({
-      where: {
-        id: Number(id),
-      },
-    })
-  }
-
-  async update(id: string, dto: UpdatePostDto) {
-    const post = await this.getById(id)
-
-    if (!post) {
-      throw new UnauthorizedException({ message: 'Пост не найден' })
+  async create(dto: CreatePostDto, image) {
+    // FIXME!!! 13.
+    const fileName = await this.filesService.createFile(image)
+    const user = await this.userService.getUserById(2)
+    console.log(user)
+    if (!user) {
+      throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND)
     }
 
-    post.content = dto.content
-    post.userName = dto.userName
-    return await this.postRepository.save(post)
-  }
+    const postEntity = this.postRepository.create({ ...dto, image: fileName, author: user })
 
-  async delete(id: string) {
-    return await this.postRepository.delete({ id: Number(id) })
+    const post = await this.postRepository.save(postEntity)
+    return post
   }
 }

@@ -1,41 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
-import { CreatePostDto } from './dto/create-post.dto'
-import { UpdatePostDto } from './dto/update-post.dto'
+import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { PostService } from './post.service'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { PostEntity } from './post.entity'
+import { ApiTags } from '@nestjs/swagger'
+import { CreatePostDto } from './dto/create-post.dto'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('Посты')
 @Controller('post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @ApiOperation({ summary: 'Получение всех постов' })
-  @ApiResponse({ status: 200, type: [PostEntity] })
-  @Get('all')
-  async getAll() {
-    return await this.postService.getAll()
-  }
-
-  @ApiOperation({ summary: 'Создание поста' })
-  @ApiResponse({ status: 200, type: PostEntity })
   @Post()
-  async create(@Body() dto: CreatePostDto) {
-    return await this.postService.create(dto)
-  }
-
-  @Get(':id')
-  async getById(@Param('id') id: string) {
-    return await this.postService.getById(id)
-  }
-
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdatePostDto) {
-    return await this.postService.update(id, dto)
-  }
-
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return await this.postService.delete(id)
+  @UseInterceptors(FileInterceptor('image'))
+  async createPost(@Body() dto: CreatePostDto, @UploadedFile() image) {
+    console.log(dto)
+    return await this.postService.create(dto, image)
   }
 }
