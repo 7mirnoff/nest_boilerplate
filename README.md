@@ -1,1 +1,1 @@
-Boilerplate for backend (NestJS) by Dmitry Smirnov
+Boilerplate for NestJS by Dmitry Smirnov
