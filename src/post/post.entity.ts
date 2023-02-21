@@ -3,7 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
@@ -24,7 +24,7 @@ export class PostEntity extends BaseEntity {
   @Column()
   image: string
 
-  @OneToMany(() => UserEntity, (author) => author.posts)
+  @ManyToOne(() => UserEntity, (author) => author.posts)
   author: UserEntity
 
   @ApiProperty({ example: '2023-01-31 22:43:43.307586+03', description: 'Дата создания поста' })

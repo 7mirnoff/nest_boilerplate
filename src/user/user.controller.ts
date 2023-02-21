@@ -23,7 +23,7 @@ export class UserController {
   @ApiOperation({ summary: 'Получение всех пользователей' })
   @ApiResponse({ status: 200, type: [UserEntity] })
   // @UseGuards(JwtAuthGuard)
-  @Roles('Admin')
+  @Roles('User')
   @UseGuards(RolesGuard)
   @Get('all')
   async getAll() {

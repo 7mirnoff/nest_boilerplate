@@ -35,6 +35,7 @@ export class UserService {
     return await this.userRepository.find({
       relations: {
         roles: true,
+        posts: true,
       },
     })
   }

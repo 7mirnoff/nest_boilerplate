@@ -5,7 +5,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
-  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
@@ -51,7 +51,7 @@ export class UserEntity extends BaseEntity {
   })
   roles: RoleEntity[]
 
-  @ManyToOne(() => PostEntity)
+  @OneToMany(() => PostEntity, (post) => post.author)
   posts: PostEntity[]
 
   @ApiProperty({ example: '2023-01-31 22:43:43.307586+03', description: 'Дата создания пользователя' })
